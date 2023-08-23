@@ -24,7 +24,7 @@ def gcd(*num):
     else:
         return sorted(gcdl)[-1]
 
-recordlist = SeqIO.parse('db.fasta','fasta')
+recordlist = SeqIO.parse(sys.argv[1],'fasta')
 recorddic = SeqIO.to_dict(recordlist)
 
 prot = []
@@ -32,6 +32,7 @@ code = []
 
 for gene in recorddic.keys():
   record = recorddic[gene]
+  prot.append("|".join(record.id.split('|')[:-1]))
   seq = record.seq
   nC = seq.count('C')
   nM = seq.count('M')
@@ -45,7 +46,6 @@ for gene in recorddic.keys():
   nS = seq.count('S')
   n = gcd( nC, nM, nK, nD+nE+1, nY, nR, nW, nH, nS)
   if n==0: continue
-  prot.append(record.id)
   code.append( [ float(nC)/n,
                  float(nM)/n,
                  float(nK)/n,
@@ -61,10 +61,10 @@ N = len(prot)
 code = np.asarray(code)
 Nc = 9
 
-sigma = float(sys.argv[1])
+sigma = float(sys.argv[2])
 top1 = 0
 top3 = 0
-for p in tqdm(range(N),ncols=100):
+for p in tqdm(range(N), ncols=100):
     #norm, add nosie
     anchor = -1
     min_ct = 9999
@@ -83,11 +83,45 @@ for p in tqdm(range(N),ncols=100):
     dist_ndx = [(d,i) for i,d in enumerate(dist)]
     dist_ndx = sorted(dist_ndx, key=lambda x : x[0])
     
-    #check rank
-    if dist_ndx[0][1] == p:
+    r = 0
+    check_id = []
+    save_top = []
+    for d, i in dist_ndx:
+        if prot[i] in check_id:
+            continue
+        else:
+            r += 1
+            check_id.append(prot[i])
+            save_top.append( (r, prot[i], d) )
+            if r==10: break
+    save_top.append( (11, "FAKE", 999) ) #close
+
+    map_redundancy = {}
+    last_dist = -1.0
+    last_rank = 0
+    redundancy = 1
+    for r, _, d in save_top:
+        if d-last_dist < 1e-6:
+            redundancy += 1
+        else:
+            if last_rank>0:
+                for i in range(last_rank, r):
+                    map_redundancy[i] = redundancy
+            last_rank = r
+            last_dist = d
+            redundancy = 1
+
+    #print(p, prot[p])
+    #print(save_top[0])
+    #print(map_redundancy)
+    #break
+    
+    if save_top[0][1] == prot[p] and map_redundancy[1]==1:
         top1 += 1
         top3 += 1
-    elif dist_ndx[1][1] == p or dist_ndx[2][1] == p:
+    elif save_top[1][1] == prot[p] and map_redundancy[2]==1:
+        top3 += 1
+    elif save_top[2][1] == prot[p] and map_redundancy[3]==1:
         top3 += 1
 
 print(N, "top1=", float(top1)/N, "top3=", float(top3)/N)
