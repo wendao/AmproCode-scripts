@@ -46,19 +46,6 @@ N = len(prot)
 code = np.asarray(code)
 Nc = 2
 
-#target = np.array([1.0, 0.98, 0.96, 0.52])
-#
-#dist = []
-#for i in range(N):
-#    dist.append(spatial.distance.cosine(code[i,:], target))
-#dist_ndx = [(d,i) for i,d in enumerate(dist)]
-#dist_ndx = sorted(dist_ndx, key=lambda x : x[0])
-#
-#r = 0
-#for d, i in dist_ndx[:10]:
-#    r += 1
-#    print( "rank=", r, prot[i], d)
-
 sigma = float(sys.argv[1])
 top1 = 0
 top3 = 0

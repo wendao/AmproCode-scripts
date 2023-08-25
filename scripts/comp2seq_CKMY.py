@@ -36,30 +36,19 @@ for gene in recorddic.keys():
   nC = seq.count('C')
   nM = seq.count('M')
   nK = seq.count('K')
-  nD = seq.count('D')
-  nE = seq.count('E')
   nY = seq.count('Y')
-  nR = seq.count('R')
-  nW = seq.count('W')
-  nH = seq.count('H')
-  nS = seq.count('S')
-  n = gcd( nC, nM, nK, nD+nE+1, nY, nR, nW, nH, nS)
+  n = gcd( nC, nM, nK, nY)
   if n==0: continue
   prot.append("|".join(record.id.split('|')[:-1]))
   code.append( [ float(nC)/n,
                  float(nM)/n,
                  float(nK)/n,
-                 float(nD+nE+1)/n,
                  float(nY)/n,
-                 float(nR)/n,
-                 float(nW)/n,
-                 float(nH)/n,
-                 float(nS)/n,
              ] )
 
 N = len(prot)
 code = np.asarray(code)
-Nc = 9
+Nc = 4
 
 sigma = float(sys.argv[2])
 top1 = 0
