@@ -1,4 +1,5 @@
 import sys
+from math import sqrt
 from Bio import SeqIO
 from collections import defaultdict
 import numpy as np
@@ -23,8 +24,7 @@ def gcd(*num):
     else:
         return sorted(gcdl)[-1]
 
-#recordlist = SeqIO.parse('UP000005640_9606.fasta','fasta')
-recordlist = SeqIO.parse('secreted_seq.fasta','fasta')
+recordlist = SeqIO.parse(sys.argv[1], 'fasta')
 recorddic = SeqIO.to_dict(recordlist)
 
 prot = []
@@ -48,11 +48,7 @@ for gene in recorddic.keys():
 N = len(prot)
 code = np.asarray(code)
 
-#target = np.array([1.0, 0.98, 0.96, 0.52]) #1e8
-#target = np.array([1.0, 1.06, 0.92, 0.57])
-target = np.array([1.89, 0, 1.0, 0.95]) #Y
-#target = np.array([2.06, 0.01, 1.0, 0.95]) #Y
-#target = target * np.random.normal(1.0, 0.25, 4)
+target = [ float(i) for i in sys.argv[2:] ]
 
 dist = []
 for i in range(N):

@@ -24,7 +24,7 @@ def gcd(*num):
     else:
         return sorted(gcdl)[-1]
 
-recordlist = SeqIO.parse('db.fasta','fasta')
+recordlist = SeqIO.parse(sys.argv[1],'fasta')
 recorddic = SeqIO.to_dict(recordlist)
 
 prot = []

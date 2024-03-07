@@ -23,8 +23,7 @@ def gcd(*num):
     else:
         return sorted(gcdl)[-1]
 
-#recordlist = SeqIO.parse('UP000005640_9606.fasta','fasta')
-recordlist = SeqIO.parse('secreted_seq.fasta','fasta')
+recordlist = SeqIO.parse(sys.argv[1],'fasta')
 recorddic = SeqIO.to_dict(recordlist)
 
 prot = []
@@ -50,8 +49,7 @@ for gene in recorddic.keys():
 N = len(prot)
 code = np.asarray(code)
 
-#target = np.array([1.89, 0, 1.0, 0.95, 1.02]) #ACFWKYCV
-target = np.array([2.06, 0.01, 1.0, 0.95, 1.00])
+target = [ float(i) for i in sys.argv[2:] ]
 
 dist = []
 for i in range(N):
