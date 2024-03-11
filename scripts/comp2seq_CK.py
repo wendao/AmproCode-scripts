@@ -46,7 +46,7 @@ N = len(prot)
 code = np.asarray(code)
 Nc = 2
 
-sigma = float(sys.argv[1])
+sigma = float(sys.argv[2])
 top1 = 0
 top3 = 0
 for p in tqdm(range(N),ncols=100):
